@@ -1,0 +1,62 @@
+---
+title: "Regression Models Project"
+author: "Beth Skierski"
+date: "4/21/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+### Executive Summary
+
+This analysis looks at a data set for a collection of cars (mtcars)  and explores the relationship between transmission type (automatic or manual) and car fuel efficiency (MPG). The approach to analyze this question is to perform exploratory analysis, create a linear model with the terms of significance only, and to ultimately quantify the effect of transmission type on mpg. 
+
+The analysis concludes that transmission type does indeed have an effect on mpg, and that when transmission type is manual vs. automatic, fuel efficiency goes up about 2.94 miles per gallon.
+
+### Exploratory Analysis
+
+First, I took a look at the data and plotted mpg as a function of transmission type. The first figure shown in the appendix suggests that transmission type does indeed have an effect on fuel efficiency.
+
+### Creation of Linear Model
+
+Next, I created a linear model with the "lm" function, then performed a stepwise regression to determine which factors should be included in the final linear model.
+
+```{r, include=FALSE}
+#create linear model with all factors
+fit <- lm(mpg ~., data=mtcars)
+#run stepwise algorithm to determine which factors to include
+step1 <- step(fit, direction = "both")
+```
+
+```{r} 
+summary(step1)
+```
+
+The summary of the stepwise regression shows that the p-values are significant for wt(weight, 1000lbs), qsec(1/4 mile time), and am(transmission type, 0=automatic, 1=manual). Therefore, these three factors should be included in the linear model. The summary shows the formula with weights for each of these factors. As shown, the recommended formula for mpg is:
+
+mpg= 9.6178 - 3.9165*wt + 1.2259*qsec + 2.9358*am
+
+### Residual Plots and Diagnostics
+
+As shown above, the R-squared value of the linear model is ~0.85, which suggests that the model explains 85% of the total variability of the data. This is rather good, but not great. Furthermore, the residual plots shown in the appendix demonstrate that the model is a pretty good fit. Specifically, the "Residuals vs. Fitted" plot shows that the distance between the fitted values (the red line) and the residuals (the points) are about equal in both directions. There do not seem to be any extreme outliers; the Chrysler Imperial seems to have strong influence on the model, but the fit is generally good, even when it is included.
+
+### Conclusions
+
+Given the good fit of the model, it can be concluded that transmission type does indeed have an effect on fuel efficiency. When transmission type is manual vs. automatic, it is expected that the fuel efficiency will go up by about 2.94 miles per gallon.
+
+
+\newpage
+
+# Appendix: Code and Figures
+```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
+
+```{r}
+plot(mpg~am, mtcars, xlab="Transmission Type", ylab="Miles per Gallon", main="Miles per Gallon vs. Transmission Type")
+```
+
+```{r} 
+plot(step1)
+```
